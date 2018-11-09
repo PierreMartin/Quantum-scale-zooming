@@ -18,16 +18,22 @@ const canvasArr = [
 			{ unit: 1e+34, title: 'Ø: 10 cm' },
 			{ unit: 1e+32, title: 'Ø: 1mm' },
 			{ unit: 1e+29, title: 'Ø: 0.000mm' },
-			{ unit: 1e+25, title: 'Ø: atom' },
-			{ unit: 1e+23, title: 'Ø: sub atom' }
+			{ unit: 1e+28, title: 'Ø: 0.0000mm' },
+			{ unit: 1e+27, title: 'Ø: 0.00000mm' },
+			{ unit: 1e+26, title: 'Ø: 0.000000mm' },
+			{ unit: 1e+25, title: 'Ø: atom (0.0000000mm or 100pm' }, // 1e-10
 		]
 	},
 	{
 		element: canvas2,
-		initScale: 1e-21,
+		initScale: 1e-23,
 		initSizes: [
-			{ unit: 1e+23, title: 'Ø: atom' },
+			{ unit: 1e+25, title: 'Ø: atom (0.0000000mm or 100pm' }, // 1e-10
+			{ unit: 1e+24, title: 'Ø: sub atom' },
+			{ unit: 1e+23, title: 'Ø: sub atom' },
+			{ unit: 1e+22, title: 'Ø: sub atom' },
 			{ unit: 1e+21, title: 'Ø: sub atom' },
+			{ unit: 1e+20, title: 'Ø: sub atom' },
 			{ unit: 1e+15, title: 'Ø: sub atom' },
 			{ unit: 1e+11, title: 'Ø: sub atom' }
 		]

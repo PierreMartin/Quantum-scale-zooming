@@ -1,79 +1,87 @@
-const canvas = document.getElementById('canvas');
+const canvas1 = document.getElementById('canvas1');
 const canvas2 = document.getElementById('canvas2');
-const legend = document.getElementById('legend');
-const percent = document.getElementById('percent');
-const legend2 = document.getElementById('legend2');
-const percent2 = document.getElementById('percent2');
+const canvas3 = document.getElementById('canvas3');
+const descib = [document.getElementById('descib'), document.getElementById('descib2'), document.getElementById('descib3')];
+const legend = [document.getElementById('legend'), document.getElementById('legend2'), document.getElementById('legend3')];
+const percent = [document.getElementById('percent'), document.getElementById('percent2'), document.getElementById('percent3')];
 
-const initScales = [ // -2 from initSizes
-	1e-33,
-	1e-21
-];
-const initSizes = [ // TODO mettre arr d'object
-	1e+35, // 1m
-	1e+34, // 10cm
-	1e+25, // atom
-	1e+23, // end
-];
-
-let ctx;
+let ctx = [];
+let zooming = [1, 1e+10, 1e+17]; // TODO calculer ca
+let limit = [1e+12, 1e+24, 1e+36]; // TODO calculer ca
 
 const canvasArr = [
 	{
-		element: canvas,
+		element: canvas1,
 		initScale: 1e-33,
 		initSizes: [
-			1e+35, // 1m
-			1e+34, // 10cm
-			1e+25, // atom
-			1e+23, // end
+			{ unit: 1e+35, title: 'Ø: 1 meter' },
+			{ unit: 1e+34, title: 'Ø: 10 cm' },
+			{ unit: 1e+32, title: 'Ø: 1mm' },
+			{ unit: 1e+29, title: 'Ø: 0.000mm' },
+			{ unit: 1e+25, title: 'Ø: atom' },
+			{ unit: 1e+23, title: 'Ø: sub atom' }
 		]
 	},
 	{
 		element: canvas2,
 		initScale: 1e-21,
 		initSizes: [
-			1e+35, // 1m
-			1e+34, // 10cm
-			1e+25, // atom
-			1e+23, // end
+			{ unit: 1e+23, title: 'Ø: atom' },
+			{ unit: 1e+21, title: 'Ø: sub atom' },
+			{ unit: 1e+15, title: 'Ø: sub atom' },
+			{ unit: 1e+11, title: 'Ø: sub atom' }
+		]
+	},
+	{
+		element: canvas3,
+		initScale: 1e-9,
+		initSizes: [
+			{ unit: 1e+11, title: 'Ø: sub atom' },
+			{ unit: 1e+9, title: 'Ø: sub atom' },
+			{ unit: 100000, title: 'Ø: sub atom' },
+			{ unit: 1000, title: 'Ø: sub atom' },
+			{ unit: 1, title: 'Ø: Plank lengh' }
 		]
 	}
 ];
 
-let zooming = 1;
-canvas.width = 800;
-canvas.height = 600;
-const lastX = canvas.width / 2;
-const lastY = canvas.height / 2;
+for (let i = 0; i < canvasArr.length; i++) {
+	canvasArr[i].element.width = 800;
+	canvasArr[i].element.height = 600;
+}
+
+const lastX = 800 / 2;
+const lastY = 600 / 2;
 
 window.onload = () => {
-	/*
 	for (let i = 0; i < canvasArr.length; i++) {
-		init(canvasArr[i]);
-		draw(canvasArr[i]);
+		initCanvas(canvasArr[i], i);
+		draw(canvasArr[i], i);
+		displayLegends(canvasArr[i], i);
 
-		canvasArr[i].element.addEventListener('DOMMouseScroll', handleScroll, false);
-		canvasArr[i].element.addEventListener('mousewheel', handleScroll, false);
+		canvasArr[i].element.addEventListener('DOMMouseScroll', (evt) => {
+			const delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
+			if (delta) zoom(delta, canvasArr[i], i);
+			return evt.preventDefault() && false;
+		}, false);
+
+		canvasArr[i].element.addEventListener('mousewheel', (evt) => {
+			const delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
+			if (delta) zoom(delta, canvasArr[i], i);
+			return evt.preventDefault() && false;
+		}, false);
 	}
-	*/
-
-	init();
-	draw();
-
-	canvas.addEventListener('DOMMouseScroll', handleScroll, false);
-	canvas.addEventListener('mousewheel', handleScroll, false);
 };
 
-const init = () => {
-	ctx = canvas.getContext('2d');
-	trackTransforms(ctx);
+const initCanvas = (canvas, index) => {
+	ctx[index] = canvas.element.getContext('2d');
+	trackTransforms(ctx[index]);
 
 	// Scale:
-	const pt = ctx.transformedPoint(lastX, lastY);
-	ctx.translate(pt.x, pt.y);
-	ctx.scale(initScales[0], initScales[0]);
-	ctx.translate(-pt.x, -pt.y);
+	const pt = ctx[index].transformedPoint(lastX, lastY);
+	ctx[index].translate(pt.x, pt.y);
+	ctx[index].scale(canvas.initScale, canvas.initScale);
+	ctx[index].translate(-pt.x, -pt.y);
 };
 
 const trackTransforms = (ctx) => {
@@ -114,68 +122,72 @@ const trackTransforms = (ctx) => {
 	}
 };
 
-const draw = () => {
+const draw = (canvas, index) => {
 	// Clear the entire canvas
-	const p1 = ctx.transformedPoint(0, 0);
-	const p2 = ctx.transformedPoint(canvas.width, canvas.height);
-	ctx.clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
-	ctx.save();
+	const p1 = ctx[index].transformedPoint(0, 0);
+	const p2 = ctx[index].transformedPoint(canvas.element.width, canvas.element.height);
+	ctx[index].clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
+	ctx[index].save();
 
 	/*
-	ctx.beginPath();
-	ctx.lineWidth = 0.1;
-	ctx.moveTo(400,350);
-	ctx.lineTo(400,300);
-	ctx.stroke();
-	ctx.save();
+	ctx[index].beginPath();
+	ctx[index].lineWidth = 0.1;
+	ctx[index].moveTo(400,350);
+	ctx[index].lineTo(400,300);
+	ctx[index].stroke();
+	ctx[index].save();
 
-	ctx.beginPath();
-	ctx.translate(400, 300);
-	ctx.lineWidth = 0.001;
+	ctx[index].beginPath();
+	ctx[index].translate(400, 300);
+	ctx[index].lineWidth = 0.001;
 	for (let i = 0; i < 360; i++) {
-			ctx.rotate(i * Math.PI / 180);
-			ctx.moveTo(1, 0);
-			ctx.lineTo(0.1, 0);
-			ctx.rotate(-1 * i * Math.PI / 180);
+			ctx[index].rotate(i * Math.PI / 180);
+			ctx[index].moveTo(1, 0);
+			ctx[index].lineTo(0.1, 0);
+			ctx[index].rotate(-1 * i * Math.PI / 180);
 	}
 
-	ctx.stroke();
-	ctx.restore();
+	ctx[index].stroke();
+	ctx[index].restore();
 	*/
 
-	for (let i = 0; i < initSizes.length; i++) {
-		// ctx.font = '3000000px Arial';
-		// ctx.fillText('Hello world', 400, 299);
+	for (let i = 0; i < canvas.initSizes.length; i++) {
+		// ctx[index].font = '3000000px Arial';
+		// ctx[index].fillText('Hello world', 400, 299);
 
-		ctx.beginPath();
-		ctx.strokeStyle = '#3540aa';
-		ctx.lineWidth = initSizes[i] / 1000;
-		ctx.arc(400, 300, initSizes[i], 0, Math.PI * 2);
-		ctx.stroke();
+		ctx[index].beginPath();
+		ctx[index].strokeStyle = '#3540aa';
+		ctx[index].lineWidth = canvas.initSizes[i].unit / 1000;
+		ctx[index].arc(400, 300, canvas.initSizes[i].unit, 0, Math.PI * 2);
+		ctx[index].stroke();
 	}
 };
 
-const zoom = (clicks) => {
-	const scaleFactor = 1.05;
-	const pt = ctx.transformedPoint(lastX, lastY);
-	const factor = Math.pow(scaleFactor, clicks);
+displayLegends = (canvas, index) => {
+	for (let i = 0; i < canvas.initSizes.length; i++) {
+		if (1e+35 / canvas.initSizes[i].unit < zooming[index]) {
+			descib[index].innerText = canvas.initSizes[i].title;
+		}
+	}
 
-	ctx.translate(pt.x, pt.y);
-	ctx.scale(factor, factor);
-	ctx.translate(-pt.x, -pt.y);
-
-	zooming *= factor;
-
-	// Stop:
-	if (zooming > 1e+12) return;
-
-	legend.innerText = zooming.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-	percent.innerText = (zooming / initSizes[0]) * 100;
-	draw();
+	legend[index].innerText = zooming[index].toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+	percent[index].innerText = (zooming[index] / canvas.initSizes[0].unit) * 100;
 };
 
-const handleScroll = (evt) => {
-	const delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
-	if (delta) zoom(delta);
-	return evt.preventDefault() && false;
+const zoom = (clicks, canvas, index) => {
+	const scaleFactor = 1.05;
+	const pt = ctx[index].transformedPoint(lastX, lastY);
+	const factor = Math.pow(scaleFactor, clicks);
+
+	ctx[index].translate(pt.x, pt.y);
+	ctx[index].scale(factor, factor);
+	ctx[index].translate(-pt.x, -pt.y);
+
+	zooming[index] *= factor;
+
+	// Stop:
+	if (zooming[index] > limit[index]) return;
+
+	displayLegends(canvas, index);
+	draw(canvas, index);
 };

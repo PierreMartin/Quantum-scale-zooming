@@ -14,26 +14,26 @@ const canvasArr = [
 		element: canvas1,
 		initScale: 1e-33,
 		initSizes: [
-			{ unit: 1e+35, title: 'Ø: 1 meter' },
-			{ unit: 1e+34, title: 'Ø: 10 cm' },
-			{ unit: 1e+32, title: 'Ø: 1mm' },
-			{ unit: 1e+29, title: 'Ø: 0.000mm' },
-			{ unit: 1e+28, title: 'Ø: 0.0000mm' },
-			{ unit: 1e+27, title: 'Ø: 0.00000mm' },
-			{ unit: 1e+26, title: 'Ø: 0.000000mm' },
-			{ unit: 1e+25, title: 'Ø: atom (0.0000000mm or 100pm' }, // 1e-10
+			{ unit: 1e+35, title: 'Ø: 1 meter' }, // 1m
+			{ unit: 1e+34, title: 'Ø: 10 cm' }, // 0.1m
+			{ unit: 1e+32, title: 'Ø: 1mm' }, // 0.001m
+			{ unit: 1e+29, title: 'Ø: 0.001mm or 1e-6m' }, // 1e-6
+			{ unit: 1e+28, title: 'Ø: 0.0001mm or 1e-7m' }, // 1e-7
+			{ unit: 1e+27, title: 'Ø: 0.00001mm or 1e-8m' }, // 1e-8
+			{ unit: 1e+26, title: 'Ø: 0.000001mm or 1e-9m' }, // 1e-9
+			{ unit: 1e+25, title: 'Ø: atom (0.0000001mm or 100pm or 1e-10m' }, // 1e-10
 		]
 	},
 	{
 		element: canvas2,
 		initScale: 1e-23,
 		initSizes: [
-			{ unit: 1e+25, title: 'Ø: atom (0.0000000mm or 100pm' }, // 1e-10
-			{ unit: 1e+24, title: 'Ø: sub atom' },
-			{ unit: 1e+23, title: 'Ø: sub atom' },
-			{ unit: 1e+22, title: 'Ø: sub atom' },
-			{ unit: 1e+21, title: 'Ø: sub atom' },
-			{ unit: 1e+20, title: 'Ø: sub atom' },
+			{ unit: 1e+25, title: 'Ø: atom (0.0000001mm or 100pm or 1e-10m' }, // 1e-10
+			{ unit: 1e+24, title: 'Ø: 1e-11m' },
+			{ unit: 1e+23, title: 'Ø: 1e-12m' },
+			{ unit: 1e+22, title: 'Ø: 1e-13m' },
+			{ unit: 1e+21, title: 'Ø: 1e-14m' },
+			{ unit: 1e+20, title: 'Ø: 1e-15m' },
 			{ unit: 1e+15, title: 'Ø: sub atom' },
 			{ unit: 1e+11, title: 'Ø: sub atom' }
 		]
